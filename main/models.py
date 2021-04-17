@@ -1,5 +1,8 @@
 from django.db import models
-# Create your models here.
+from mapbox_location_field.models import LocationField
 
 
-
+class LocationPickerModel(models.Model):
+    location = LocationField(map_attrs={"style": "mapbox://styles/mightysharky/cjwgnjzr004bu1dnpw8kzxa72", "center": (17.031645, 51.106715)})
+    radius = models.IntegerField()
+    time = models.TimeField()

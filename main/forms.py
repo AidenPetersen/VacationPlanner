@@ -1,8 +1,8 @@
 from django import forms
-import floppyforms as ff
+from .models import LocationPickerModel
 
 
-class LocationPickerForm(forms.Form):
-    location = ff.gis.PointField()
-    radius = forms.NumberInput()
-    time = forms.TimeField()
+class LocationPickerForm(forms.ModelForm):
+    class Meta:
+        model = LocationPickerModel
+        fields = "__all__"

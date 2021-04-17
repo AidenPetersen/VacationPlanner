@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
 
-    "floppyforms",
+    "mapbox_location_field",
+    "main",
 ]
 
 MIDDLEWARE = [
@@ -127,5 +128,5 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MAPBOX_KEY = "pk.eyJ1IjoicnVkeW5haHJhIiwiYSI6ImNrbmx4amIwazBqa2oydXF2NGZjbmh6dDgifQ.v_dwOiY5mdLrrCU8yO4s3A"
+MAPBOX_KEY = "pk.eyJ1Ijoic2Ftbmlja2xleiIsImEiOiJja25tMTNqcHMwbWt1MnBwZDU0aXJnd3NjIn0.JcSHkOZSAgq6RavxSrC70A"
 
