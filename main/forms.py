@@ -1,10 +1,8 @@
-import django.forms as forms
-from mapbox_location_field.forms import LocationField
+from django import forms
+import floppyforms as ff
 
 
 class LocationPickerForm(forms.Form):
-    location = LocationField()
-    radius = forms.NumberInput
-    time = forms.TimeField
-
-#pog
+    location = ff.gis.PointField()
+    radius = forms.NumberInput()
+    time = forms.TimeField()
