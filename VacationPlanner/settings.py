@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
+    "mapbox_location_field",
 ]
 
 MIDDLEWARE = [
@@ -124,3 +127,5 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MAPBOX_KEY = "pk.eyJ1IjoicnVkeW5haHJhIiwiYSI6ImNrbmx4amIwazBqa2oydXF2NGZjbmh6dDgifQ.v_dwOiY5mdLrrCU8yO4s3A"
+
