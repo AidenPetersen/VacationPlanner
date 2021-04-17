@@ -74,6 +74,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'VacationPlanner.wsgi.application'
 
+STATIC_URL = '/static/'
+STATIC_ROOT = 'staticfiles'
+STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

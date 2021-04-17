@@ -1,13 +1,23 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap.rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-grid.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-grid.rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-reboot.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-reboot.rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-utilities.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-utilities.rtl.css' %}">
     <meta charset="UTF-8">
     <title>Vacation Planner</title>
 </head>
 <body>
 <div class="container">
-    <h1 align="center" class="display-3 bg-info text-light">UIOWA HACKATHON 2021</h1>
-    <h2 align="center" class="display-5">Vacation Planner</h2>
+    <h1 align="center" style='font-weight: bold' class="display-4 bg-danger text-warning">UIOWA HACKATHON 2021</h1>
+    <h2 align="center" class="display-2">Vacation Planner</h2>
 </div>
 {% block body %}
 {% endblock %}

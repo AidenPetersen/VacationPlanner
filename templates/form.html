@@ -7,12 +7,13 @@
     {% load mapbox_location_field_tags %}
     {% location_field_includes %}
     {% include_jquery %}
-
+    <div id="container">
     <form method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="submit">
     </form>
+        </div>
     {{ form.media }}
 
 {% endblock %}
