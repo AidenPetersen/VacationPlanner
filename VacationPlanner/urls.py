@@ -19,5 +19,6 @@ import main.views as mv
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', mv.home)
+    path('', mv.home),
+    path('analysis', mv.analysis)
 ]
