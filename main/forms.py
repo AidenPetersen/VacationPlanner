@@ -6,3 +6,5 @@ class LocationPickerForm(forms.Form):
     location = LocationField()
     radius = forms.NumberInput
     time = forms.TimeField
+
+#pog

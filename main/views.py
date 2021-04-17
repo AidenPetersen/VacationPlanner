@@ -9,5 +9,5 @@ def home(request):
     location_form = LocationPickerForm()
 
     return render(request, 'base.html', {
-        'form' : location_form
+        'form': location_form
     })
