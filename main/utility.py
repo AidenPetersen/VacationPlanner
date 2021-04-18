@@ -142,38 +142,41 @@ def get_path(lat, lon, days, radius, available, food):
     path = []
     print("avail" + str(available))
     print("food" + str(food))
-    for i in range(days):
-        time = 9
-        n, dist = get_next_attraction_s(lat, lon, available, visited)
-        lunch = False
-        while time < 19:
-            if time > 11 and not lunch:
-                n, dist = n.get_next_attraction(food, visited)
-                print(str(dist) + "km")
-                travel_time = 1 / 15 * dist
-                time += travel_time
-                for x in n.misc['kinds'].split(','):
-                    if x in time_dict:
-                        time += time_dict[x]
-                        break
-                path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-                path.append(n)
+    try:
+        for i in range(days):
+            time = 9
+            n, dist = get_next_attraction_s(lat, lon, available, visited)
+            lunch = False
+            while time < 19:
+                if time > 11 and not lunch:
+                    n, dist = n.get_next_attraction(food, visited)
+                    print(str(dist) + "km")
+                    travel_time = 1 / 15 * dist
+                    time += travel_time
+                    for x in n.misc['kinds'].split(','):
+                        if x in time_dict:
+                            time += time_dict[x]
+                            break
+                    path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
+                    path.append(n)
 
-                lunch = True
-            else:
-                print(str(dist) + "km")
-                n, dist = n.get_next_attraction(available, visited)
-                travel_time = dist / 6
-                time += travel_time * dist + 1
-                path.append(f"Travel {ceil(travel_time * 60)} minutes to {n}")
+                    lunch = True
+                else:
+                    print(str(dist) + "km")
+                    n, dist = n.get_next_attraction(available, visited)
+                    travel_time = dist / 6
+                    time += travel_time * dist + 1
+                    path.append(f"Travel {ceil(travel_time * 60)} minutes to {n}")
 
-                path.append(n)
-        n, dist = n.get_next_attraction(food, visited)
-        travel_time = 1 / 15 * dist
-        path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-        path.append(n)
+                    path.append(n)
+            n, dist = n.get_next_attraction(food, visited)
+            travel_time = 1 / 15 * dist
+            path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
+            path.append(n)
+            return path
 
-    return path
+    except Exception:
+        return ["Error, Not enough quality places to visit"]
 
 
 def get_next_attraction_s(lat, lon, available: list, visited: list):
