@@ -1,5 +1,6 @@
 from yelpapi import YelpAPI
 import requests
+from math import radians, sin, cos, acos
 
 
 def get_yelp_review(latitude: float, longitude: float, name: str) -> float:
@@ -12,22 +13,19 @@ def get_yelp_review(latitude: float, longitude: float, name: str) -> float:
     except TypeError:
         return 0
 
+
 def format_attractions(latitude: float, longitude: float, radius: int) -> list:
     attractions_list = otm_get("radius", radius_query(latitude, longitude, radius))
-    attractions_ratings = [get_yelp_review(latitude,longitude,x['name']) for x in attractions_list]
+    attractions_ratings = [get_yelp_review(latitude, longitude, x['name']) for x in attractions_list]
     attractions = []
     outer_index = 0
     inner_index = 0
     for rating in attractions_ratings:
-        if(rating > 3.5):
-            attractions[inner_index] = (attractions_list[outer_index] ,rating)
-            inner_index+=1
-        outer_index+=1
+        if (rating > 3.5):
+            attractions[inner_index] = (attractions_list[outer_index], rating)
+            inner_index += 1
+        outer_index += 1
     return attractions
-
-
-
-
 
 
 def radius_query(latitude: float, longitude: float, rad: int) -> str:
@@ -44,5 +42,13 @@ def otm_get(method: str, query: str):
     reqstr += method + "?apikey=" + otm_key + "&" + query
     r = requests.get(reqstr)
     return r.json()
+
+
+def coords_to_dist(slat: float, slon: float, elat: float, elon: float) -> float:
+    slat = radians(slat)
+    slon = radians(slon)
+    elat = radians(elat)
+    elon = radians(elon)
+    return 6371.01 * acos(sin(slat) * sin(elat) + cos(slat) * cos(elat) * cos(slon - elon))
 
 # otmget("radius",radiusquery(41.66127,-91.53680, 1000))
