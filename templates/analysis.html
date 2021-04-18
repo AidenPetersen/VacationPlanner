@@ -6,13 +6,11 @@
     <p>You are going to {{ location }} for {{ days }} days, and you are looking for attractions in a
         radius within {{ radius }} miles</p>
     <table>
-        {% for x in attractions_names %}
-            {% if x != '' %}
+        {% for name,ratings,_ in attractions_tuples %}
             <tr>
-             {{ x }}
+             {{ name }} {{ ratings }}
             </tr>
             <br>
-            {% endif %}
         {% endfor %}
     </table>
 </div>
