@@ -5,16 +5,18 @@
         <div class="text-center">
             <p>You are going to {{ location }} for {{ days }} days, and you are looking for attractions in a
                 radius within {{ radius }} miles</p>
-            <table class="table">
+        </div>
+            <table class="table table-striped table-bordered">
+            <thead></thead>
                 <tbody>
                 {% for s in path %}
                     <tr>
-                        {{ s }}
+                        <th scope="row"> {{ forloop.counter }}</th>
+                        <td>{{ s }}</td>
                     </tr>
-                    <br>
                 {% endfor %}
-                <tbody>
+                </tbody>
             </table>
-        </div>
+
     </div>
 {% endblock %}

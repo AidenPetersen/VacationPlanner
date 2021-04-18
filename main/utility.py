@@ -1,5 +1,6 @@
 from asyncio import run
 from haversine import haversine, Unit
+from typing import Tuple, List
 
 from yelpapi import YelpAPI
 import requests
@@ -11,10 +12,17 @@ class PlaceNode:
     lat = 0
     long = 0
     rating = 0
-    mist = {}
+    misc = {}
+
+
 
     def __str__(self):
-        return str(self.name)
+        time = 0
+        for x in self.misc['kinds'].split(','):
+            if x in time_dict:
+                time = time_dict[x]
+                break
+        return "stay at " + str(self.name) + " for " + str(time) + " hours"
 
     def __init__(self, name, lat, long, rating, misc):
         self.name = name
@@ -61,7 +69,7 @@ def get_yelp_review(latitude: float, longitude: float, name: str, token_num: int
         return 0
 
 
-def format_attractions(latitude: float, longitude: float, radius: int) -> tuple[list[PlaceNode], list[PlaceNode]]:
+def format_attractions(latitude: float, longitude: float, radius: int) -> Tuple[List[PlaceNode], List[PlaceNode]]:
     attractions_list = otm_get("radius", attractions_query(latitude, longitude, radius))
     foods_list = otm_get("radius", foods_query(latitude, longitude, radius))
 
@@ -175,10 +183,9 @@ def get_path(lat, lon, days, radius, available, food):
             n, dist = n.get_next_attraction(food, visited)
             travel_time = 1 / 15 * dist
             path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-            path.append(n)
         return path
     except Exception:
-        return ['Error, not enough interesting places to visit']
+        return ['Error, not enough interesting places to visit. Go somewhere more interesting.']
 
 
 def get_next_attraction_s(lat, lon, available: list, visited: list):
