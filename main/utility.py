@@ -48,7 +48,7 @@ def get_yelp_review(latitude: float, longitude: float, name: str, token_num: int
         "pUUE2sp9znWz3doMfBQuO9NpsjrXxd1buJ5ECvqcuUmgnDYxf5ov375i9xwThXEZ_7sQJuPN_djpXGF9GMChQWgrpsxw1lyytnBh4V3W3IK_CYIK4m_2bALI8bV7YHYx",
         "rzbaE_ls0PITatDUuJrGK_sxkXRsoCfkflk8KAr_USpYfdy-8hV_At3W8qQdAtC3Jw6F6r8T38zt_QKX8LLxBwefZxX3P1QnhKYN1mUr-e5or5fpNSoSgufLG7d7YHYx"]
     yelp_api = YelpAPI(tokens[token_num])
-    response = yelp_api.search_query(latitude=latitude, longitude=longitude, term=name, radius=100, limit=1)
+    response = yelp_api.search_query(latitude=latitude, longitude=longitude, term=name, radius=200, limit=1)
     print(name)
     try:
         return response['businesses'][0]['rating']
@@ -142,41 +142,38 @@ def get_path(lat, lon, days, radius, available, food):
     path = []
     print("avail" + str(available))
     print("food" + str(food))
-    try:
-        for i in range(days):
-            time = 9
-            n, dist = get_next_attraction_s(lat, lon, available, visited)
-            lunch = False
-            while time < 19:
-                if time > 11 and not lunch:
-                    n, dist = n.get_next_attraction(food, visited)
-                    print(str(dist) + "km")
-                    travel_time = 1 / 15 * dist
-                    time += travel_time
-                    for x in n.misc['kinds'].split(','):
-                        if x in time_dict:
-                            time += time_dict[x]
-                            break
-                    path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-                    path.append(n)
+    for i in range(days):
+        time = 9
+        n, dist = get_next_attraction_s(lat, lon, available, visited)
+        lunch = False
+        while time < 19:
+            if time > 11 and not lunch:
+                n, dist = n.get_next_attraction(food, visited)
+                print(str(dist) + "km")
+                travel_time = 1 / 15 * dist
+                time += travel_time
+                for x in n.misc['kinds'].split(','):
+                    if x in time_dict:
+                        time += time_dict[x]
+                        break
+                path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
+                path.append(n)
 
-                    lunch = True
-                else:
-                    print(str(dist) + "km")
-                    n, dist = n.get_next_attraction(available, visited)
-                    travel_time = dist / 6
-                    time += travel_time * dist + 1
-                    path.append(f"Travel {ceil(travel_time * 60)} minutes to {n}")
+                lunch = True
+            else:
+                print(str(dist) + "km")
+                n, dist = n.get_next_attraction(available, visited)
+                travel_time = dist / 6
+                time += travel_time * dist + 1
+                path.append(f"Travel {ceil(travel_time * 60)} minutes to {n}")
 
-                    path.append(n)
-            n, dist = n.get_next_attraction(food, visited)
-            travel_time = 1 / 15 * dist
-            path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-            path.append(n)
-            return path
+                path.append(n)
+        n, dist = n.get_next_attraction(food, visited)
+        travel_time = 1 / 15 * dist
+        path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
+        path.append(n)
 
-    except Exception:
-        return ["Error, Not enough quality places to visit"]
+    return path
 
 
 def get_next_attraction_s(lat, lon, available: list, visited: list):
@@ -190,6 +187,8 @@ def get_next_attraction_s(lat, lon, available: list, visited: list):
             max_obj = i
 
     visited.append(max_obj)
+    if max_obj is None:
+        raise Exception('not enough attractions')
     return max_obj, distance
 
 
