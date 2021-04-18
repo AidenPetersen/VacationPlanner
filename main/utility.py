@@ -36,15 +36,17 @@ def format_attractions(latitude: float, longitude: float, radius: int) -> list:
         counter %= 3
 
     attractions = []
-    outer_index = 0
-    inner_index = 0
+    index = 0
     for rating in attractions_ratings:
         print(rating)
         if rating > 3.5:
-            name = attractions_list[outer_index]['name']
+            name = attractions_list[index]['name']
             if name:
-                attractions.append((attractions_list[outer_index]['name'], rating, attractions_list[outer_index]))
-        outer_index += 1
+                lat = attractions_list[index]['point']['lat']
+                lon = attractions_list[index]['point']['lon']
+
+                attractions.append(PlaceNode(name, lat, lon, rating, attractions_list[index]))
+        index += 1
     return attractions
 
 
@@ -70,5 +72,62 @@ def coords_to_dist(slat: float, slon: float, elat: float, elon: float) -> float:
     elat = radians(elat)
     elon = radians(elon)
     return 6371.01 * acos(sin(slat) * sin(elat) + cos(slat) * cos(elat) * cos(slon - elon))
+
+
+def get_next_attraction(self, available: list, visited: list, lat: float, lon: float):
+    max_favor = 0
+    max_obj = None
+    for i in available:
+        if self.get_favor(i) > max_favor:
+            max_favor = self.get_favor(i)
+            max_obj = i
+            visited.append(i)
+
+    return max_obj
+
+
+def get_next_attraction_s(lat, lon, available: list, visited: list):
+    dummy = PlaceNode(None, lat, lon, 0, {})
+    max_favor = 0
+    max_obj = None
+    for i in available:
+        if (not visited.__contains__(i)) and (dummy.get_favor(i) > max_favor):
+            max_favor = dummy.get_favor(i)
+            max_obj = i
+            visited.append(i)
+
+    return max_obj
+
+
+class PlaceNode:
+    name = None
+    lat = 0
+    long = 0
+    rating = 0
+    mist = {}
+
+    def __str__(self):
+        return "wip"
+
+    def __init__(self, name, lat, long, rating, misc):
+        self.name = name
+        self.lat = lat
+        self.long = long
+        self.rating = rating
+        self.misc = misc
+
+    def get_favor(self, other) -> float:
+        return other.rating / ((coords_to_dist(self.lat, self.long, other.lat, other.long)) ** 2)
+
+    def get_next_attraction(self, available: list, visited: list):
+        max_favor = 0
+        max_obj = None
+        for i in available:
+            if (not visited.__contains__(i)) and (self.get_favor(i) > max_favor):
+                max_favor = self.get_favor(i)
+                max_obj = i
+                visited.append(i)
+
+        return max_obj
 
 # otmget("radius",radiusquery(41.66127,-91.53680, 1000))

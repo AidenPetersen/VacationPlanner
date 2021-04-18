@@ -27,6 +27,7 @@ def analysis(request):
     attractions = format_attractions(lat, long, int(data['radius']) * 1609)
     attractions_names = [x[0] for x in attractions]
     attractions_ratings = [x[1] for x in attractions]
+
     return render(request, 'analysis.html', {
         'attractions_tuples': attractions,
         'location': data['location'],
