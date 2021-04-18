@@ -84,7 +84,7 @@ def prep_frontend(name, rating, types):
         elif (types[i][0] == 'c') & (types[i][1] == 'a'):
             types[i] = 'cafe'
         elif (types[i][0] == 'c') & (types[i][1] == 'u'):
-            types[i] = 'cultural'
+            types[i] = 'cultural site'
         elif (types[i][0] == 'c') & (types[i][1] == 'i'):
             types[i] = 'cinema'
         else:
