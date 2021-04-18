@@ -169,7 +169,7 @@ def get_path(lat, lon, days, radius, available, food):
                             time += time_dict[x]
                             break
                     path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-                    #path.append(n)
+                    path.append(n)
 
                     lunch = True
                 else:
