@@ -68,11 +68,25 @@ def otm_get(method: str, query: str):
 
 def prep_frontend(name, rating, types):
     my_list = []
+
+    # This could be done better back this was a quick and easy solution
     for i in range(len(name)):
         if types[i][0] == 'r':
             types[i] = 'restaurant'
         elif types[i][0] == 'm':
             types[i] = 'museum'
+        elif types[i][0] == 's':
+            types[i] = 'shop'
+        elif types[i][0] == 'h':
+            types[i] = 'historic site'
+        elif types[i][0] == 'f':
+            types[i] = 'restaurant'
+        elif (types[i][0] == 'c') & (types[i][1] == 'a'):
+            types[i] = 'cafe'
+        elif (types[i][0] == 'c') & (types[i][1] == 'u'):
+            types[i] = 'cultural'
+        elif (types[i][0] == 'c') & (types[i][1] == 'i'):
+            types[i] = 'cinema'
         else:
             types[i] = 'not supported yet'
         my_list.append((name[i], rating[i], types[i]))
