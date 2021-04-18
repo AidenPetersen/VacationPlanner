@@ -169,7 +169,7 @@ def get_path(lat, lon, days, radius, available, food):
                             time += time_dict[x]
                             break
                     path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
-                    path.append(n)
+                    #path.append(n)
 
                     lunch = True
                 else:
@@ -179,10 +179,11 @@ def get_path(lat, lon, days, radius, available, food):
                     time += travel_time * dist + 1
                     path.append(f"Travel {ceil(travel_time * 60)} minutes to {n}")
 
-                    path.append(n)
+                    #path.append(n)
             n, dist = n.get_next_attraction(food, visited)
             travel_time = 1 / 15 * dist
             path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
+            path.append(n)
         return path
     except Exception:
         return ['Error, not enough interesting places to visit. Go somewhere more interesting.']
@@ -210,7 +211,7 @@ time_dict = {
     "cultural": 3,
     "natural": 3,
     "historic": 2,
-    "foods": 2,
+    "foods": 1,
     "shops": 1,
     "amusements": 6
 }
