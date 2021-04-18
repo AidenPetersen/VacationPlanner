@@ -64,6 +64,21 @@ def otm_get(method: str, query: str):
     return r.json()
 
 
+# TODO: Add the rest of the amusement types
+
+def prep_frontend(name, rating, types):
+    my_list = []
+    for i in range(len(name)):
+        if types[i][0] == 'r':
+            types[i] = 'restaurant'
+        elif types[i][0] == 'm':
+            types[i] = 'museum'
+        else:
+            types[i] = 'not supported yet'
+        my_list.append((name[i], rating[i], types[i]))
+    return my_list
+
+
 def coords_to_dist(slat: float, slon: float, elat: float, elon: float) -> float:
     slat = radians(slat)
     slon = radians(slon)
