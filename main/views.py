@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import LocationPickerForm
+import requests
 
 # Create your views here.
 from django.shortcuts import render
@@ -26,3 +27,21 @@ def analysis(request):
     return render(request, 'analysis.html', {
         'data': data,
     })
+
+
+def radiusquery(lat, long, rad):
+    str = f"radius={rad}&limit=25&offset=0&lat={lat}&lon={long}&format=json"
+    return str
+
+def otmget(method, query):
+    OTM_KEY = "5ae2e3f221c38a28845f05b6e93dcff7317a493d8bb313a3fd186d0c"
+
+    reqstr = "https://api.opentripmap.com/0.1/en/places/"
+    reqstr += method + "?apikey="+ OTM_KEY + "&" + query
+    r = requests.get(reqstr)
+    print(r.text)
+
+#otmget("radius",radiusquery(41.66127,-91.53680, 1000))
+
+
+
