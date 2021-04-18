@@ -10,7 +10,7 @@ def home(request):
         f = LocationPickerForm(request.POST)
 
         if f.is_valid():
-            print(f.data)
+            # print(f.data)
             request.session['data'] = f.data
             return redirect(analysis)
 
@@ -24,14 +24,11 @@ def analysis(request):
     location = data['location'].split(',')
     lat = location[0]
     long = location[1]
-    attractions = format_attractions(lat, long, int(data['radius']) * 1609)
-    attractions_names = [x[0] for x in attractions]
-    attractions_ratings = [x[1] for x in attractions]
-
+    print(f"days = {data['days']}")
+    print(f"radius = {data['radius']}")
+    attractions, food = format_attractions(lat, long, int(data['radius']) * 1609)
+    path = get_path(lat, long, int(data['days']), int(data['radius']), attractions, food)
+    print(path)
     return render(request, 'analysis.html', {
-        'attractions_tuples': attractions,
-        'location': data['location'],
-        'days': data['days'],
-        'radius': data['radius']
+        'path': path
     })
-

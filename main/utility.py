@@ -1,9 +1,45 @@
-from asyncio import run, wait
+from asyncio import run
+from random import random
 
 from yelpapi import YelpAPI
 import requests
 from math import radians, sin, cos, acos
-import threading
+
+
+class PlaceNode:
+    name = None
+    lat = 0
+    long = 0
+    rating = 0
+    mist = {}
+
+    def __str__(self):
+        return str(self.name)
+
+    def __init__(self, name, lat, long, rating, misc):
+        self.name = name
+        self.lat = float(lat)
+        self.long = float(long)
+        self.rating = rating
+        self.misc = misc
+
+    def get_favor(self, other):
+        distance = (coords_to_dist(self.lat, self.long, other.lat, other.long))
+        return other.rating / (distance ** 2), distance
+
+    def get_next_attraction(self, available: list, visited: list):
+        max_favor = 0
+        distance = 0
+        max_obj = None
+        for i in available:
+            if (not visited.__contains__(i)) and (self.get_favor(i)[0] > max_favor):
+                max_favor, distance = self.get_favor(i)
+                max_obj = i
+
+        visited.append(max_obj)
+        if max_obj is None:
+            raise Exception('Not enough places')
+        return max_obj, distance
 
 
 def get_yelp_review(latitude: float, longitude: float, name: str, token_num: int) -> float:
@@ -20,8 +56,9 @@ def get_yelp_review(latitude: float, longitude: float, name: str, token_num: int
         return 0
 
 
-def format_attractions(latitude: float, longitude: float, radius: int) -> list:
-    attractions_list = otm_get("radius", radius_query(latitude, longitude, radius))
+def format_attractions(latitude: float, longitude: float, radius: int) -> tuple[list[PlaceNode], list[PlaceNode]]:
+    attractions_list = otm_get("radius", attractions_query(latitude, longitude, radius))
+    foods_list = otm_get("radius", foods_query(latitude, longitude, radius))
 
     # attractions_ratings = [get_yelp_review(x['point']['lat'], x['point']['lon'], x['name']) for x in attractions_list]
 
@@ -29,16 +66,24 @@ def format_attractions(latitude: float, longitude: float, radius: int) -> list:
         arr.append(get_yelp_review(lat, lon, n, t))
 
     attractions_ratings = []
+    foods_rating = []
     counter = 0
     for x in attractions_list:
-        run(add_review(attractions_ratings, x['point']['lat'], x['point']['lon'], x['name'], counter))
+        if 'interesting_places' in x['kinds'] and 'foods' not in x['kinds']:
+            run(add_review(attractions_ratings, x['point']['lat'], x['point']['lon'], x['name'], counter))
+            counter += 1
+            counter %= 3
+
+    for x in foods_list:
+        run(add_review(foods_rating, x['point']['lat'], x['point']['lon'], x['name'], counter))
         counter += 1
         counter %= 3
 
     attractions = []
+    foods = []
     index = 0
     for rating in attractions_ratings:
-        print(rating)
+        print(str(rating) + " attraction")
         if rating > 3.5:
             name = attractions_list[index]['name']
             if name:
@@ -47,12 +92,33 @@ def format_attractions(latitude: float, longitude: float, radius: int) -> list:
 
                 attractions.append(PlaceNode(name, lat, lon, rating, attractions_list[index]))
         index += 1
-    return attractions
+
+    index = 0
+    for rating in foods_rating:
+        print(str(rating) + " food")
+        if rating > 3.5:
+            name = foods_list[index]['name']
+            print(name)
+            if name is not None and name:
+                lat = foods_list[index]['point']['lat']
+                lon = foods_list[index]['point']['lon']
+
+                foods.append(PlaceNode(name, lat, lon, rating, foods_list[index]))
+        index += 1
+
+    return attractions, foods
 
 
-def radius_query(latitude: float, longitude: float, rad: int) -> str:
-    limit = 1000
-    whitelist = 'architecture%2Ccultural%2Chistoric%2Cnatural%2Cfoods%2Cshops%2Camusements'
+def attractions_query(latitude: float, longitude: float, rad: int) -> str:
+    limit = 200
+    whitelist = 'architecture%2Ccultural%2Chistoric%2Cnatural%2Cshops%2Camusements'
+    string = f"radius={rad}&limit={limit}&offset=0&lat={latitude}&lon={longitude}&format=json&kinds={whitelist}"
+    return string
+
+
+def foods_query(latitude: float, longitude: float, rad: int) -> str:
+    limit = 100
+    whitelist = 'foods'
     string = f"radius={rad}&limit={limit}&offset=0&lat={latitude}&lon={longitude}&format=json&kinds={whitelist}"
     return string
 
@@ -63,6 +129,7 @@ def otm_get(method: str, query: str):
     reqstr = "https://api.opentripmap.com/0.1/en/places/"
     reqstr += method + "?apikey=" + otm_key + "&" + query
     r = requests.get(reqstr)
+    print(r)
     return r.json()
 
 
@@ -74,73 +141,68 @@ def coords_to_dist(slat: float, slon: float, elat: float, elon: float) -> float:
     return 6371.01 * acos(sin(slat) * sin(elat) + cos(slat) * cos(elat) * cos(slon - elon))
 
 
-def get_next_attraction(self, available: list, visited: list, lat: float, lon: float):
-    max_favor = 0
-    max_obj = None
-    for i in available:
-        if self.get_favor(i) > max_favor:
-            max_favor = self.get_favor(i)
-            max_obj = i
-            visited.append(i)
+def get_path(lat, lon, days, radius, available, food):
+    visited = []
+    path = []
+    print("avail" + str(available))
+    print("food" + str(food))
+    for i in range(days):
+        time = 9
+        n, dist = get_next_attraction_s(lat, lon, available, visited)
+        lunch = False
+        while time < 19:
+            if time > 11 and not lunch:
+                n, dist = n.get_next_attraction(food, visited)
+                print(str(dist) + "km")
+                travel_time = 1 / 15 * dist
+                time += travel_time
+                for x in n.misc['kinds'].split(','):
+                    if x in time_dict:
+                        time += time_dict[x]
+                        break
+                path.append(f"Travel {travel_time * 60} minutes eat at {n.name}")
+                path.append(n)
 
-    return max_obj
+                lunch = True
+            else:
+                print(str(dist) + "km")
+                n, dist = n.get_next_attraction(available, visited)
+                travel_time = dist
+                time += travel_time * dist + 1
+                path.append(f"Travel {travel_time * 60} minutes to {n}")
+
+                path.append(n)
+        n, dist = n.get_next_attraction(food, visited)
+        travel_time = 1 / 15 * dist
+        path.append(f"Travel {travel_time * 60} minutes eat at {n.name}")
+        path.append(n)
+
+    return path
 
 
 def get_next_attraction_s(lat, lon, available: list, visited: list):
     dummy = PlaceNode(None, lat, lon, 0, {})
     max_favor = 0
     max_obj = None
+    distance = 0
     for i in available:
-        if (not visited.__contains__(i)) and (dummy.get_favor(i) > max_favor):
-            max_favor = dummy.get_favor(i)
+        if (not visited.__contains__(i)) and (dummy.get_favor(i)[0] > max_favor):
+            max_favor, distance = dummy.get_favor(i)
             max_obj = i
-            visited.append(i)
 
-    return max_obj
+    visited.append(max_obj)
+    return max_obj, distance
 
 
-class PlaceNode:
-    name = None
-    lat = 0
-    long = 0
-    rating = 0
-    mist = {}
-
-    def __str__(self):
-        return "wip"
-
-    def __init__(self, name, lat, long, rating, misc):
-        self.name = name
-        self.lat = lat
-        self.long = long
-        self.rating = rating
-        self.misc = misc
-
-    def get_favor(self, other) -> float:
-        return other.rating / ((coords_to_dist(self.lat, self.long, other.lat, other.long)) ** 2)
-
-    def get_next_attraction(self, available: list, visited: list):
-        max_favor = 0
-        max_obj = None
-        for i in available:
-            if (not visited.__contains__(i)) and (self.get_favor(i) > max_favor):
-                max_favor = self.get_favor(i)
-                max_obj = i
-                visited.append(i)
-
-        return max_obj
-
-#architecture%2Ccultural%2Chistoric%2Cnatural%2Cfoods%2Cshops%2Camusements'
+# architecture%2Ccultural%2Chistoric%2Cnatural%2Cfoods%2Cshops%2Camusements'
 time_dict = {
-    "architecture" : 2,
-    "cultural" : 3,
-    "natural" : 3,
+    "architecture": 2,
+    "cultural": 3,
+    "natural": 3,
     "historic": 2,
-    "foods" : 2,
-    "shops" : 1,
-    "amusements" : 6
+    "foods": 2,
+    "shops": 1,
+    "amusements": 6
 }
-
-
 
 # otmget("radius",radiusquery(41.66127,-91.53680, 1000))

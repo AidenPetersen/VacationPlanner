@@ -6,9 +6,9 @@
     <p>You are going to {{ location }} for {{ days }} days, and you are looking for attractions in a
         radius within {{ radius }} miles</p>
     <table>
-        {% for name,ratings,_ in attractions_tuples %}
+        {% for s in path %}
             <tr>
-             {{ name }} {{ ratings }}
+             {{ s }}
             </tr>
             <br>
         {% endfor %}
