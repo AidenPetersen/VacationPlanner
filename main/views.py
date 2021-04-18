@@ -24,7 +24,7 @@ def analysis(request):
     l = data['location'].split(',')
     lat = l[0]
     long = l[1]
-    attractions_list = otm_get("radius", radius_query(lat, long, data['radius']))
+    attractions_list = otm_get("radius", radius_query(lat, long, int(data['radius']) * 1609))
     print(attractions_list)
     attractions_names = [x['name'] for x in attractions_list]
     return render(request, 'analysis.html', {
