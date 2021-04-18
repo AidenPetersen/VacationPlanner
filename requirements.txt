@@ -3,3 +3,4 @@ django-mapbox-location-field~=1.7.1
 django-bootstrap4~=3.0.0
 requests~=2.25.1
 yelpapi~=2.4.0
+haversine~=2.3.0

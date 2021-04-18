@@ -1,9 +1,9 @@
 from asyncio import run
-from random import random
+from haversine import haversine, Unit
 
 from yelpapi import YelpAPI
 import requests
-from math import radians, sin, cos, acos
+from math import radians, sin, cos, acos, ceil
 
 
 class PlaceNode:
@@ -134,11 +134,7 @@ def otm_get(method: str, query: str):
 
 
 def coords_to_dist(slat: float, slon: float, elat: float, elon: float) -> float:
-    slat = radians(slat)
-    slon = radians(slon)
-    elat = radians(elat)
-    elon = radians(elon)
-    return 6371.01 * acos(sin(slat) * sin(elat) + cos(slat) * cos(elat) * cos(slon - elon))
+    return haversine((slat, slon), (elat, elon))
 
 
 def get_path(lat, lon, days, radius, available, food):
@@ -160,21 +156,21 @@ def get_path(lat, lon, days, radius, available, food):
                     if x in time_dict:
                         time += time_dict[x]
                         break
-                path.append(f"Travel {travel_time * 60} minutes eat at {n.name}")
+                path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
                 path.append(n)
 
                 lunch = True
             else:
                 print(str(dist) + "km")
                 n, dist = n.get_next_attraction(available, visited)
-                travel_time = dist
+                travel_time = dist / 6
                 time += travel_time * dist + 1
-                path.append(f"Travel {travel_time * 60} minutes to {n}")
+                path.append(f"Travel {ceil(travel_time * 60)} minutes to {n}")
 
                 path.append(n)
         n, dist = n.get_next_attraction(food, visited)
         travel_time = 1 / 15 * dist
-        path.append(f"Travel {travel_time * 60} minutes eat at {n.name}")
+        path.append(f"Travel {ceil(travel_time * 60)} minutes eat at {n.name}")
         path.append(n)
 
     return path
