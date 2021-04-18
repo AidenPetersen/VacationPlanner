@@ -1,10 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import LocationPickerForm
-import requests
 from .utility import *
-
-# Create your views here.
-from django.shortcuts import render
 
 
 def home(request):
