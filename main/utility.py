@@ -43,10 +43,15 @@ class PlaceNode:
 
 
 def get_yelp_review(latitude: float, longitude: float, name: str, token_num: int) -> float:
+    # tokens = [
+    #     "JwyKsopjKmwG41IpB_mUzDtY7JSiNZsPGpiWzdlGrDZ5GHfXZE0kCx11sPtH-epP20pBnbUXxj4Nhz_AY0cKzTBktSbu2CjnfLfyyM-wsUeleiAM1YStOBFdvHl7YHYx ",
+    #     "pUUE2sp9znWz3doMfBQuO9NpsjrXxd1buJ5ECvqcuUmgnDYxf5ov375i9xwThXEZ_7sQJuPN_djpXGF9GMChQWgrpsxw1lyytnBh4V3W3IK_CYIK4m_2bALI8bV7YHYx",
+    #     "rzbaE_ls0PITatDUuJrGK_sxkXRsoCfkflk8KAr_USpYfdy-8hV_At3W8qQdAtC3Jw6F6r8T38zt_QKX8LLxBwefZxX3P1QnhKYN1mUr-e5or5fpNSoSgufLG7d7YHYx"]
     tokens = [
-        "JwyKsopjKmwG41IpB_mUzDtY7JSiNZsPGpiWzdlGrDZ5GHfXZE0kCx11sPtH-epP20pBnbUXxj4Nhz_AY0cKzTBktSbu2CjnfLfyyM-wsUeleiAM1YStOBFdvHl7YHYx ",
-        "pUUE2sp9znWz3doMfBQuO9NpsjrXxd1buJ5ECvqcuUmgnDYxf5ov375i9xwThXEZ_7sQJuPN_djpXGF9GMChQWgrpsxw1lyytnBh4V3W3IK_CYIK4m_2bALI8bV7YHYx",
-        "rzbaE_ls0PITatDUuJrGK_sxkXRsoCfkflk8KAr_USpYfdy-8hV_At3W8qQdAtC3Jw6F6r8T38zt_QKX8LLxBwefZxX3P1QnhKYN1mUr-e5or5fpNSoSgufLG7d7YHYx"]
+        'ZXKOaBUsftySJ9WlHg2Vr-pjNpcfTg--4K89dratYsHrfRIj0Vw9MqsFLTQREaTOkrxzheA4KPrbd1jIMJuJypj8QcrHvsHQYNs3EJgfNF-gQtQH6RzvqipN_1d8YHYx',
+        'cIUBiccbQCizZmj-2MpQrBgmDg3ibWcjVGDkC8xk76L7G4KaHmx2s-Qpq7STWo0GldLVsp6LAmWbLJ682Eq00OQ5b3FzC_hWmk8BPKmPghJ9u6rm8kPDGAQI_Fp8YHYx'
+    ]
+    token_num = token_num % len(tokens)
     yelp_api = YelpAPI(tokens[token_num])
     response = yelp_api.search_query(latitude=latitude, longitude=longitude, term=name, radius=200, limit=1)
     print(name)
@@ -72,12 +77,10 @@ def format_attractions(latitude: float, longitude: float, radius: int) -> tuple[
         if 'interesting_places' in x['kinds'] and 'foods' not in x['kinds']:
             run(add_review(attractions_ratings, x['point']['lat'], x['point']['lon'], x['name'], counter))
             counter += 1
-            counter %= 3
 
     for x in foods_list:
         run(add_review(foods_rating, x['point']['lat'], x['point']['lon'], x['name'], counter))
         counter += 1
-        counter %= 3
 
     attractions = []
     foods = []
