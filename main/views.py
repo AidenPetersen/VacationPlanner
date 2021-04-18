@@ -21,11 +21,15 @@ def home(request):
 
 def analysis(request):
     data = request.session['data']
+    l = data['location'].split(',')
+    lat = l[0]
+    long = l[1]
+    attractions_list = otm_get("radius", radius_query(lat, long, data['radius']))
+    print(attractions_list)
+    attractions_names = [x['name'] for x in attractions_list]
     return render(request, 'analysis.html', {
+        'attractions_names': attractions_names,
         'location': data['location'],
         'days': data['days'],
         'radius': data['radius']
     })
-
-
-

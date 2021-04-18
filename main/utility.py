@@ -24,6 +24,6 @@ def otm_get(method: str, query: str):
     reqstr = "https://api.opentripmap.com/0.1/en/places/"
     reqstr += method + "?apikey=" + otm_key + "&" + query
     r = requests.get(reqstr)
-    print(r.text)
+    return r.json()
 
 # otmget("radius",radiusquery(41.66127,-91.53680, 1000))
