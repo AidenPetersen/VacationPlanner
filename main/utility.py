@@ -8,22 +8,25 @@ def get_yelp_review(latitude: float, longitude: float, name: str) -> float:
           "-wsUeleiAM1YStOBFdvHl7YHYx "
     yelp_api = YelpAPI(key)
     response = yelp_api.search_query(latitude=latitude, longitude=longitude, term=name, radius=100, limit=1)
+    print(name)
     try:
         return response['businesses'][0]['rating']
-    except TypeError:
+    except (IndexError,TypeError):
         return 0
 
 
 def format_attractions(latitude: float, longitude: float, radius: int) -> list:
     attractions_list = otm_get("radius", radius_query(latitude, longitude, radius))
-    attractions_ratings = [get_yelp_review(latitude, longitude, x['name']) for x in attractions_list]
+    attractions_ratings = [get_yelp_review(x['point']['lat'], x['point']['lon'], x['name']) for x in attractions_list]
     attractions = []
     outer_index = 0
     inner_index = 0
     for rating in attractions_ratings:
+        print(rating)
         if (rating > 3.5):
-            attractions[inner_index] = (attractions_list[outer_index], rating)
-            inner_index += 1
+            name = attractions_list[outer_index]['name']
+            if name:
+                attractions.append((attractions_list[outer_index]['name'], rating, attractions_list[outer_index]))
         outer_index += 1
     return attractions
 

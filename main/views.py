@@ -24,11 +24,13 @@ def analysis(request):
     location = data['location'].split(',')
     lat = location[0]
     long = location[1]
-    attractions_list = otm_get("radius", radius_query(lat, long, int(data['radius']) * 1609))
-    attractions_names = [x['name'] for x in attractions_list]
+    attractions = format_attractions(lat, long, int(data['radius']) * 1609)
+    attractions_names = [x[0] for x in attractions]
+    attractions_ratings = [x[1] for x in attractions]
     return render(request, 'analysis.html', {
-        'attractions_names': attractions_names,
+        'attractions_tuples': attractions,
         'location': data['location'],
         'days': data['days'],
         'radius': data['radius']
     })
+
