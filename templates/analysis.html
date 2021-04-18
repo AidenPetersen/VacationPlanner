@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class = "container">
-    {{ data }}
+<div class = "container" >
+<div class="row align-items-start">
+    <div class = "col-sm-4">
+    <p>Your selected location is:</p>{{ location }}
+    </div>
+    <div class = "col-sm-4">
+    <p>Your selected days is:</p>{{ days }}
+    </div>
+    <div class = "col-sm-4">
+    <p>Your selected radius is:</p>{{ radius }}
+    </div>
+</div>
 </div>
 {% endblock %}

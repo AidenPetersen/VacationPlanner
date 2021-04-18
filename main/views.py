@@ -25,7 +25,9 @@ def home(request):
 def analysis(request):
     data = request.session['data']
     return render(request, 'analysis.html', {
-        'data': data,
+        'location': data['location'],
+        'days': data['days'],
+        'radius': data['radius']
     })
 
 
