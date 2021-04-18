@@ -130,4 +130,17 @@ class PlaceNode:
 
         return max_obj
 
+#architecture%2Ccultural%2Chistoric%2Cnatural%2Cfoods%2Cshops%2Camusements'
+time_dict = {
+    "architecture" : 2,
+    "cultural" : 3,
+    "natural" : 3,
+    "historic": 2,
+    "foods" : 2,
+    "shops" : 1,
+    "amusements" : 6
+}
+
+
+
 # otmget("radius",radiusquery(41.66127,-91.53680, 1000))
