@@ -14,7 +14,9 @@ def get_yelp_review(latitude: float, longitude: float, name: str) -> float:
 
 
 def radius_query(latitude: float, longitude: float, rad: int) -> str:
-    string = f"radius={rad}&limit=25&offset=0&lat={latitude}&lon={longitude}&format=json"
+    limit = 1000
+    whitelist = 'architecture%2Ccultural%2Chistoric%2Cnatural%2Cfoods%2Cshops%2Camusements'
+    string = f"radius={rad}&limit={limit}&offset=0&lat={latitude}&lon={longitude}&format=json&kinds={whitelist}"
     return string
 
 
