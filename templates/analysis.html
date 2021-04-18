@@ -2,16 +2,9 @@
 
 {% block body %}
 <div class = "container" >
-<div class="row align-items-start">
-    <div class = "col-sm-4">
-    <p>Your selected location is:</p>{{ location }}
-    </div>
-    <div class = "col-sm-4">
-    <p>Your selected days is:</p>{{ days }}
-    </div>
-    <div class = "col-sm-4">
-    <p>Your selected radius is:</p>{{ radius }}
-    </div>
+<div class="text-center">
+    <p>You are going to {{ location }} for {{ days }} days, and you are looking for attractions in a
+        radius within {{ radius }} miles</p>
 </div>
 </div>
 {% endblock %}
